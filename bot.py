@@ -1,6 +1,11 @@
 import os
 import threading
 import asyncio
+
+# Render-এর জন্য Event Loop Fix: Client ডিক্লেয়ার করার আগেই লুপ সেট করতে হবে!
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+
 from flask import Flask
 from pyrogram import Client
 from pyrogram.types import ChatJoinRequest
@@ -17,6 +22,7 @@ def run_web():
     web_app.run(host='0.0.0.0', port=port)
 
 # ----------------- TELEGRAM BOT CONFIG ----------------- #
+# সতর্কতা: টোকেনগুলো নতুন করে জেনারেট করে এখানে বসাবেন!
 api_id = 32063796
 api_hash = "4e224e4cf56b771fb2656fbbdffe1b25"
 bot_token = "8910522047:AAHZCV5GS1tiN9vQAM-DF_Mls1KiJ03-2pA"
@@ -39,10 +45,6 @@ async def auto_accept(client: Client, request: ChatJoinRequest):
 if __name__ == "__main__":
     # ব্যাকগ্রাউন্ডে ওয়েব সার্ভার চালু করা হচ্ছে
     threading.Thread(target=run_web, daemon=True).start()
-    
-    # Asyncio Event Loop Fix for Render
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     
     print("বট সফলভাবে চালু হয়েছে... রিকোয়েস্টের জন্য অপেক্ষা করছে!")
     app.run()
